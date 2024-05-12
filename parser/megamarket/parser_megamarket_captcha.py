@@ -4,19 +4,26 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 
-from SQL.sql_func import *
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from .func_parser_megamarket import *
 
 
-def parser_megamarket(search):
+def parser_megamarket_captcha(search):
+
+    # Настраиваем опции Chrome для режима headless
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Указываем, что браузер должен быть headless
+    chrome_options.add_argument("--disable-gpu")  # Эта опция обычно необходима для headless
+    chrome_options.add_argument("--no-sandbox")  # Эта опция обходит операционную систему sandbox
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Эта опция предотвращает использование файловой системы /dev/shm
+
     # Создаём экземпляр веб-драйвера
-    driver = webdriver.Chrome()
-
-    # SQL
-    create_base("bd")
-
+    driver = webdriver.Chrome(options=chrome_options)
     count_url = 0
-    while count_url < 20:
+    while count_url < 10:
 
         count_url += 1
 
@@ -46,13 +53,14 @@ def parser_megamarket(search):
 
         # Теперь используем эту функцию в цикле
         for element in elements:
-            url = find_url_cart_megamarket(element)
-            name = find_name_cart_megamarket(element)
-            price = find_price_cart_megamarket(element)
-            cashback = find_cashback_cart_megamarket(element)
-            final_price = price - cashback
-            write_in_bd("bd", url, name, price, cashback, final_price)
+            find_url_cart_megamarket(element)
+            find_name_cart_megamarket(element)
+            find_price_cart_megamarket(element)
+            find_cashback_cart_megamarket(element)
             print("++++++++++++++++++++++++++++")
+        with open('page.html', 'w', encoding='utf-8') as file:
+            file.write(html)
+            print("Файл сохранён")
 
     # Закрываем драйвер браузера
     driver.quit()
