@@ -31,14 +31,18 @@ def parser_megamarket(name):
         '.catalog-item-mobile.ddl_product'
     )
 
-    for element in elements:
-        # Ищем первый тег 'a' внутри текущего элемента
+    def find_url_cart_megamarket(element):
+        # Ищем первый тег 'a' внутри переданного элемента
         link = element.find('a')
         # Проверяем, что тег 'a' был найден и это действительно тег, а не что-то другое
         if link and hasattr(link, 'get'):
             href = link.get('href')
             if href:  # Проверяем, что атрибут 'href' существует
                 print(href)
+
+    # Теперь используем эту функцию в цикле
+    for element in elements:
+        find_url_cart_megamarket(element)
 
         print("++++++++++++++++++++++++++++")
 
