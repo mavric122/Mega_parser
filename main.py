@@ -1,3 +1,6 @@
 from parser.megamarket.parser_megamarket import parser_megamarket
+search = "Кухня"
 
-parser_megamarket("f")
+
+
+parser_megamarket(search)
