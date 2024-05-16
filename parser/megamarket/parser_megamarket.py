@@ -13,7 +13,7 @@ def parser_megamarket(search):
     driver = webdriver.Chrome()
 
     # SQL
-    create_base("bd")
+    create_base(search)
 
     count_url = 0
     while count_url < 20:
@@ -51,7 +51,7 @@ def parser_megamarket(search):
             price = find_price_cart_megamarket(element)
             cashback = find_cashback_cart_megamarket(element)
             final_price = price - cashback
-            write_in_bd("bd", url, name, price, cashback, final_price)
+            write_in_bd(search, url, name, price, cashback, final_price)
             print("++++++++++++++++++++++++++++")
 
     # Закрываем драйвер браузера
