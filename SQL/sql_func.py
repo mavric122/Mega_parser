@@ -5,7 +5,7 @@ def find_name_db(search):
     count = 0
     while True:
         bd = f"{search}_{count}" if count > 0 else search
-        file_path = f"./{bd}.db"
+        file_path = f"./temp/{bd}.db"
         full_file_path = os.path.abspath(file_path)
 
         if os.path.exists(full_file_path) and os.path.isfile(full_file_path):
@@ -18,7 +18,7 @@ def find_name_db(search):
 
 def create_base(bd_name):
     bd_name = find_name_db(bd_name)
-    conn = sqlite3.connect(f"{bd_name}.db")
+    conn = sqlite3.connect(f"temp/{bd_name}.db")
     cursor = conn.cursor()
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS bd (
@@ -32,7 +32,7 @@ def create_base(bd_name):
     conn.close()
 
 def write_in_bd(bd_name, url, name, price, cashback, final_price):
-    conn = sqlite3.connect(f'{bd_name}.db')
+    conn = sqlite3.connect(f'temp/{bd_name}.db')
     cursor = conn.cursor()
     # Здесь должно быть преобразование final_price в float
     cursor.execute("INSERT INTO bd (name, price, cashback, url, final_price) VALUES (?, ?, ?, ?, ?)",
