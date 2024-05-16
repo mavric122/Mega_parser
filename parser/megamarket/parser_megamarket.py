@@ -19,7 +19,8 @@ def parser_megamarket(search):
     while count_elements != 0:
 
         count_url += 1
-        search = 
+        new_url = search.replace(" ", "%20")
+        print(new_url)
         # URL веб-страницы
         url = (f'https://megamarket.ru/catalog/page-{count_url}/?q={search}')
         print(url)
