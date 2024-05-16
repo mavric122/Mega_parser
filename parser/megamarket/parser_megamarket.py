@@ -14,12 +14,12 @@ def parser_megamarket(search):
 
     # SQL
     create_base(search)
-
+    count_elements = 1
     count_url = 0
-    while count_url < 20:
+    while count_elements != 0:
 
         count_url += 1
-
+        search = 
         # URL веб-страницы
         url = (f'https://megamarket.ru/catalog/page-{count_url}/?q={search}')
         print(url)
@@ -43,17 +43,17 @@ def parser_megamarket(search):
             '.r .catalog-items-list '
             '.catalog-item-mobile.ddl_product'
         )
-
-        # Теперь используем эту функцию в цикле
+        count_elements = 0
+        # Поиск данных на странице
         for element in elements:
+            count_elements += 1
             url = find_url_cart_megamarket(element)
             name = find_name_cart_megamarket(element)
             price = find_price_cart_megamarket(element)
             cashback = find_cashback_cart_megamarket(element)
             final_price = price - cashback
             write_in_bd(search, url, name, price, cashback, final_price)
-            print("++++++++++++++++++++++++++++")
-
+        print(f"Количество элементов на странице {count_url} - {count_elements}")
     # Закрываем драйвер браузера
     driver.quit()
 
