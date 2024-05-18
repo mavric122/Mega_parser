@@ -7,6 +7,7 @@ import time
 from SQL.sql_func import *
 from .func_parser_megamarket import *
 
+# Коммент для теста
 
 def parser_megamarket(search):
     # Создаём экземпляр веб-драйвера
