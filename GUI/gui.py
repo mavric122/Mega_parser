@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk, BOTH
 from tkinter import messagebox
 
+from GUI.gui_func import label_find_name, dinamic_text
+
 
 def main_menu():
     # Создание главного окна
@@ -37,19 +39,11 @@ def main_menu():
     notebook.add(ozon_frame, text="OZON")
     notebook.add(wb_frame, text="Wildberries")
 
+    # Вкладка все магазины label_find_name
+    label_find_name(all_shop_frame)
+
+
     root.mainloop()
-
-    label = tk.Label(root, text="Добро пожаловать в MegaParser!", font=("Arial", 18), anchor="w")
-    label.pack(pady=40, fill="x")  # Расширение виджета по горизонтали
-
-    # Пример виджета Button
-    button = tk.Button(root, text="Начать парсинг", command=lambda: print("Парсинг начат"))
-    button.pack(pady=10)
-
-    # Запуск главного цикла обработки событий
-    root.mainloop()
-
-    # Вызов функции main_menu, если этот файл запускается как основной
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import sqlite3
 import os
 
 def find_name_db(search):
+    search = search.replace(" ", "_")
     count = 0
     while True:
         bd = f"{search}_{count}" if count > 0 else search
@@ -32,6 +33,7 @@ def create_base(bd_name):
     conn.close()
 
 def write_in_bd(bd_name, url, name, price, cashback, final_price):
+    bd_name = bd_name.replace(" ", "_")
     conn = sqlite3.connect(f'temp/{bd_name}.db')
     cursor = conn.cursor()
     # Здесь должно быть преобразование final_price в float
