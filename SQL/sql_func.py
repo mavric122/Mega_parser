@@ -36,8 +36,18 @@ def write_in_bd(bd_name, url, name, price, cashback, final_price):
     bd_name = bd_name.replace(" ", "_")
     conn = sqlite3.connect(f'temp/{bd_name}.db')
     cursor = conn.cursor()
-    # Здесь должно быть преобразование final_price в float
     cursor.execute("INSERT INTO bd (name, price, cashback, url, final_price) VALUES (?, ?, ?, ?, ?)",
                    (name, price, cashback, url, final_price))
     conn.commit()
     conn.close()
+
+def view_base(bd_name):
+    bd_name = bd_name.replace(" ", "_")
+    print(bd_name)
+    conn = sqlite3.connect(f'temp/{bd_name}.db')
+    cursor = conn.cursor()
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data
+

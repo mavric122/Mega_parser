@@ -2,6 +2,7 @@ import  requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from SQL.sql_func import view_base, create_base
 import time
 
 from SQL.sql_func import *
@@ -19,17 +20,12 @@ def parser_megamarket(search):
     count_elements = 1
     count_url = 0
     redirect_fact = 0
+    dublicate = 0
     while count_elements != 0:
         search = search.replace(" ", "%20")
-        print("Проверочный url = ")
         count_url += 1
         if redirect_fact == 0 or redirect_fact == False:
             url = (f'https://megamarket.ru/catalog/page-{count_url}/?q={search}')
-
-
-
-
-
 
         # Открываем страницу с помощью Selenium
         driver.get(url)
@@ -42,8 +38,6 @@ def parser_megamarket(search):
 
         # Проверка на редирект
         current_url = driver.current_url
-        print("Текущий URL страницы:")
-        print(current_url)
 
         if redirect_fact == 0:
             url_space = url.replace(" ", "%20")
@@ -58,8 +52,6 @@ def parser_megamarket(search):
                 parts = current_url.split("#")
 
                 url = f"{parts[0]}page-{count_url}/#{parts[1]}"
-                print("Новый url = ")
-                print(url)
                 redirect_fact = True
                 continue
         if redirect_fact == True:
@@ -94,13 +86,21 @@ def parser_megamarket(search):
             cashback = find_cashback_cart_megamarket(element)
             final_price = price - cashback
             search_bd = search.replace("%20", "_")
-            write_in_bd(search_bd, url_card, name, price, cashback, final_price)
-            count_elements += 1
-            all_elemenets += 1
+
+            # Проверка на дубликат в БД
+            if find_dublicate(search_bd, name, price, cashback, url_card):
+                dublicate += 1
+                if dublicate == 10:
+                    break
+            else:
+                write_in_bd(search_bd, url_card, name, price, cashback, final_price)
+                count_elements += 1
+                all_elemenets += 1
+
         print(f"Количество элементов на странице {count_url} - {count_elements}")
 
     # Закрываем драйвер браузера
     driver.quit()
     print(f"Функция парсера мегамаркета отработала")
-    message = f"Функция парсера мегамаркета отработала, найдено {all_elemenets} товара"
+    message = f"Поиск по Мегамаркету выполнен, найдено {all_elemenets} товара \n Дубликатов найдено {dublicate}"
     return message

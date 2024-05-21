@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import sqlite3
+from SQL.sql_func import view_base
 
 
 def find_url_cart_megamarket(element):
@@ -54,3 +56,40 @@ def find_cashback_cart_megamarket(element):
     else:
         # print("Кэшбека нет!")
         return 0
+
+def find_dublicate(name_bd, name, price, cashback, url):
+    # Подключаемся к базе данных
+    bd_name = name_bd.replace(" ", "_")
+    print(bd_name)
+    conn = sqlite3.connect(f'temp/{bd_name}.db')
+    cursor = conn.cursor()
+
+    try:
+        # Формируем SQL-запрос для поиска записи с такими же значениями
+        query = """
+        SELECT id, name FROM bd
+        WHERE name = ? AND price = ? AND cashback = ? AND url = ?
+        """
+
+        # Выполняем запрос
+        cursor.execute(query, (name, price, cashback, url))
+
+        # Получаем результат
+        result = cursor.fetchone()
+
+        # Проверяем наличие записи
+        if result:
+            # print("Запись с такими же данными уже существует в базе данных.")
+            # id, name = result
+            # print(f"ID товара: {id}, Название товара: {name}")
+            return True
+        else:
+            # print("Запись не найдена в базе данных.")
+            return False
+    except sqlite3.Error as e:
+        print(f"Ошибка при работе с базой данных: {e}")
+        return False
+    finally:
+        # Закрываем соединение с базой данных
+        cursor.close()
+        conn.close()

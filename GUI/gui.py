@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, BOTH
 from tkinter import messagebox
 
-from GUI.gui_func import label_find_name, dinamic_text
+from GUI.gui_func import label_find_name, dinamic_text, create_treeview, view_base
 
 
 def main_menu():
@@ -41,6 +41,9 @@ def main_menu():
 
     # Вкладка все магазины label_find_name
     label_find_name(all_shop_frame)
+
+
+    label_find_name(megamarket_frame)
 
 
     root.mainloop()
