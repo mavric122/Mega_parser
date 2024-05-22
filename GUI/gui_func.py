@@ -1,11 +1,15 @@
+import logging
 from tkinter import ttk, BOTH, scrolledtext
 import tkinter as tk
 import time
+from logging import getLogger
+
 from SQL.sql_func import view_base
 
 from parser.megamarket.parser_megamarket import parser_megamarket
 
 
+logger = getLogger(__name__)
 
 def create_treeview(data):
     # Создание главного окна
@@ -66,12 +70,11 @@ def label_find_name(shop):
     # функция поиска по кнопке
     def search_function():
         search_query = label_shop.get()
-        print("Выполняем поиск по имени:", search_query)
+        logger.info("Выполняем поиск по имени:", search_query)
         dinamic_text(shop, f"Выполнен поиск по имени: {search_query}")
         message = parser_megamarket(search_query)
         dinamic_text(shop, message)
         data = view_base(search_query)
-        print(data)
         create_treeview(data)
         # Кнопка "Поиск"
 

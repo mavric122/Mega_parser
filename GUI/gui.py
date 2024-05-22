@@ -1,9 +1,10 @@
 import tkinter as tk
-from tkinter import ttk, BOTH
-from tkinter import messagebox
+from tkinter import ttk, BOTH, messagebox
+from logging import getLogger
 
 from GUI.gui_func import label_find_name, dinamic_text, create_treeview, view_base
 
+logger = getLogger(__name__)
 
 def main_menu():
     # Создание главного окна
