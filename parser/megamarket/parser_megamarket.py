@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from SQL.sql_func import view_base, create_base
+from SQL.sql_func import create_base
 import time
 from logging import getLogger
 
@@ -31,11 +31,11 @@ def parser_megamarket(search):
         # Открываем страницу с помощью Selenium
         driver.get(url)
 
-        # Ожидаем несколько секунд, чтобы убедиться, что страница полностью загружена
         time.sleep(1)  # Пауза в  секунд
 
         # Получаем исходный код страницы
         html = driver.page_source
+        logging.info("HTML получен")  # Это сообщение будет выведено
 
         # Проверка на редирект
         current_url = driver.current_url
@@ -43,7 +43,7 @@ def parser_megamarket(search):
         if redirect_fact == 0:
             url_space = url.replace(" ", "%20")
             if url == current_url or url == url_space:
-                logger.debug("Страница совпадает, редиректа не было")
+                logger.info("Страница совпадает, редиректа не было")
                 redirect_fact = False
             else:
                 logger.info("Произошёл редирект")
@@ -79,7 +79,7 @@ def parser_megamarket(search):
             name = find_name_cart_megamarket(element)
             price = find_price_cart_megamarket(element)
             if price == 0:
-                logger.debug("Найден дубликат.")
+                logger.info("Найден дубликат.")
                 continue
             cashback = find_cashback_cart_megamarket(element)
             final_price = price - cashback
@@ -89,7 +89,7 @@ def parser_megamarket(search):
             if find_dublicate(search_bd, name, price, cashback, url_card):
                 dublicate += 1
                 if dublicate == 10:
-                    logger.debug("Дубликатов уже 10. Прекращяем поиск.")
+                    logger.info("Дубликатов уже 10. Прекращяем поиск.")
                     break
             else:
                 write_in_bd(search_bd, url_card, name, price, cashback, final_price)
@@ -101,6 +101,7 @@ def parser_megamarket(search):
 
     # Закрываем драйвер браузера
     driver.quit()
+
     print(f"Функция парсера мегамаркета отработала")
     logger.info("Функция мегапарсера завершила работу")
     message = f"Поиск по Мегамаркету выполнен, найдено {all_elemenets} товара \n Дубликатов найдено {dublicate}"

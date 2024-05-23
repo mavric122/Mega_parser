@@ -2,6 +2,8 @@ import logging
 import sqlite3
 import os
 from logging import getLogger
+from openpyxl import Workbook
+import shutil
 
 logger = getLogger(__name__)
 
@@ -36,7 +38,7 @@ def create_base(bd_name):
         url TEXT)''')
     conn.commit()
     conn.close()
-    logger.debug("БД создана")
+    logger.info("БД создана")
 
 def write_in_bd(bd_name, url, name, price, cashback, final_price):
     bd_name = bd_name.replace(" ", "_")
@@ -47,7 +49,7 @@ def write_in_bd(bd_name, url, name, price, cashback, final_price):
     conn.commit()
     conn.close()
 
-def view_base(bd_name):
+def view_base_in_table(bd_name):
     bd_name = bd_name.replace(" ", "_")
     conn = sqlite3.connect(f'temp/{bd_name}.db')
     cursor = conn.cursor()
@@ -65,4 +67,64 @@ def view_base(bd_name):
     cursor.close()
     conn.close()
     return data
+
+
+
+def clear_folder(folder_path):
+  """Удаляет все файлы и подпапки внутри указанной папки.
+
+  Args:
+    folder_path: Путь к папке, которую нужно очистить.
+  """
+
+  for filename in os.listdir(folder_path):
+    file_path = os.path.join(folder_path, filename)
+    try:
+      if os.path.isfile(file_path) or os.path.islink(file_path):
+        os.unlink(file_path)  # Удаляем файл или символическую ссылку
+      elif os.path.isdir(file_path):
+        shutil.rmtree(file_path)  # Удаляем подпапку и её содержимое
+    except Exception as e:
+      print(f"Ошибка при удалении {file_path}: {e}")
+
+def create_excel_from_sql(bd_name):
+    # Подключение к базе данных
+    bd_name = bd_name.replace(" ", "_")
+    conn = sqlite3.connect(f'temp/{bd_name}.db')
+
+    # Создание курсора
+    cursor = conn.cursor()
+
+    # Выполнение запроса к БД
+    cursor.execute("SELECT * FROM bd")  # замените 'table_name' на имя вашей таблицы
+
+    # Получение результатов запроса
+    results = cursor.fetchall()
+
+    # Создание книги Excel
+    workbook = Workbook()
+    sheet = workbook.active
+
+    # Заполнение шапки таблицы с названиями столбцов
+    columns = [i[0] for i in cursor.description]
+    sheet.append(columns)
+
+    # Заполнение данных
+    for row in results:
+        sheet.append(row)
+
+    # Сохранение файла Excel
+    # Формирование пути к папке "Результаты" на один уровень выше
+    results_folder = os.path.join("Результат")
+    # Сохранение файла
+    workbook.save(os.path.join(results_folder, f"{bd_name}.xlsx"))
+    logger.info(f"Файл {bd_name}.xlsx сохранён.")
+
+    # Закрытие соединения с БД
+    cursor.close()
+    conn.close()
+    message = f"Данные сохранены в {bd_name} в папку /Результат/"
+    clear_folder("temp")
+    logger.info("БД удалены")
+    return message
 

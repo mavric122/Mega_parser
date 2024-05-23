@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import sqlite3
 
-from SQL.sql_func import view_base
 
 logger = getLogger(__name__)
 

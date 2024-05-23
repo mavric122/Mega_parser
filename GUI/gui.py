@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import ttk, BOTH, messagebox
 from logging import getLogger
 
-from GUI.gui_func import label_find_name, dinamic_text, create_treeview, view_base
+from GUI.gui_func import label_find_name
+from SQL.sql_func import create_excel_from_sql
 
 logger = getLogger(__name__)
 
